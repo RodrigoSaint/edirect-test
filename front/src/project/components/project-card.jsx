@@ -7,9 +7,13 @@ import TaskCreation from "./task/task-creation";
 import { updateProject } from "../projectService";
 
 export default ({ project, onDelete }) => {
-  const handleDelete = React.useCallback(() => onDelete(project), [project]);
-  const handleChange = React.useCallback((name) =>
-    updateProject({ ...project, name })
+  const handleDelete = React.useCallback(() => onDelete(project), [
+    project,
+    onDelete,
+  ]);
+  const handleChange = React.useCallback(
+    (name) => updateProject({ ...project, name }),
+    [project]
   );
   return (
     <Formik initialValues={{ project }}>

@@ -26,7 +26,11 @@ export default () => {
       <div className="flex four">
         <ProjectCreation onCreate={addNewProject} />
         {projectCollection.map((project) => (
-          <ProjectCard project={project} onDelete={onDelete} />
+          <ProjectCard
+            key={project._id}
+            project={project}
+            onDelete={onDelete}
+          />
         ))}
       </div>
     </div>

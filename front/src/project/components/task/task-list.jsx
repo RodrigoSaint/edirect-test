@@ -10,8 +10,18 @@ export default () => {
   const { values, setFieldValue } = useFormikContext();
   const { project } = values;
 
+  const onGoingTaskCollection = React.useMemo(
+    () => project.taskCollection.filter((c) => !c.done),
+    [project.taskCollection]
+  );
+
+  const completedTaskCollection = React.useMemo(
+    () => project.taskCollection.filter((c) => c.done),
+    [project.taskCollection]
+  );
+
   const onDelete = (index) => {
-    const task = project.taskCollection[index];
+    const task = onGoingTaskCollection[index];
     setFieldValue(
       "project.taskCollection",
       project.taskCollection.filter((t) => t !== task)
@@ -20,24 +30,30 @@ export default () => {
   };
 
   const onChange = (index, change) => {
-    const task = project.taskCollection[index];
+    const task = onGoingTaskCollection[index];
     updateTask(project._id, { ...task, ...change });
+  };
+
+  const onComplete = (index) => {
+    setFieldValue(`project.taskCollection[${index}].done`, true);
+    onChange(index, { done: true });
   };
 
   return (
     <div className="taskList">
-      {project.taskCollection.map((task, index) => (
-        <div className="taskList-item">
+      <div>
+        <strong>To do</strong>
+      </div>
+      {onGoingTaskCollection.map((task, index) => (
+        <div key={task._id} className="taskList-item">
           <div>
             <label>
               <input
                 type="checkbox"
                 checked={task.done}
-                onChange={(event) =>
-                  onChange(index, { done: event.target.value })
-                }
+                onChange={() => onComplete(index)}
               />
-              <span class="checkable" />
+              <span className="checkable" />
             </label>
           </div>
           <EditableField
@@ -45,6 +61,19 @@ export default () => {
             onDelete={() => onDelete(index)}
             onChange={(name) => onChange(index, { name })}
           />
+        </div>
+      ))}
+      <div>
+        <strong>Completed</strong>
+      </div>
+      {completedTaskCollection.map((task, index) => (
+        <div key={task._id} className="taskList-item">
+          <div>
+            <label>
+              <input type="checkbox" checked={task.done} readOnly />
+              <span className="checkable">{task.name}</span>
+            </label>
+          </div>
         </div>
       ))}
     </div>

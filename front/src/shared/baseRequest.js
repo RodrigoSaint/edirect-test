@@ -6,7 +6,7 @@ export default (path, config = {}) =>
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      authorization: localStorage.getItem("userToken"),
+      authorization: localStorage.getItem("userToken") || "",
       ...config.headers,
     },
   }).then((result) => result.json());
